@@ -45,7 +45,7 @@ export default {
       flow: null,
       newSheet: null,
       speech: "A",
-      heading: "",
+      heading: "h1, h2, h3",
     }
   },
   methods: {

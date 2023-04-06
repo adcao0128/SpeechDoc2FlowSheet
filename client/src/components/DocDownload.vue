@@ -34,7 +34,6 @@
       </b>
   </div>
 </template>
-<!--a :href="this.newSheet" download>Download</a> -->
 <script>
 
 export default {
@@ -64,23 +63,28 @@ export default {
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
+    //makes the added div container from docx2html invisible
     async makeInvisible() {
       await this.sleep(2000);
       const htmlDiv = document.getElementById("A");
       htmlDiv.style.display = "none";
     },
+    //creates the excel sheet
     async createExcel() {
       let workbook;
       let XLSX = require("xlsx");
+      //Either creates a new workbook or gets a workbook from the given sheet
       if(this.flow == null) {
         workbook = XLSX.utils.book_new();
       } else {
         const data = await this.flow.arrayBuffer();
         workbook = XLSX.read(data);
       }
+      //Grabs the headings for the flow sheets
       const flowNames = document.querySelectorAll(`${this.heading}`);
-
+      //Get the tags for each flow sheet
       for(let i = 0; i < flowNames.length; i++) {
+        //Sets up which tags to take from heading to heading
         let name = flowNames[i];
         let nextName;
         let second2Last = null;
@@ -90,16 +94,20 @@ export default {
           second2Last = flowNames[i - 1];
         }
         let tags = [];
+        //Goes through the entire HTML dom
         for (let currentElement of document.querySelectorAll("h4")) {
+          //Either we are at the start/middle of the document
           if((i != flowNames.length - 1) && currentElement.tagName == "H4" && (currentElement.compareDocumentPosition(name) == 2 && currentElement.compareDocumentPosition(nextName) == 4)) {
             tags.push([currentElement.textContent]);
             tags.push([])
           }
+          //Or the last heading for the document
           if((i == flowNames.length - 1) && currentElement.tagName == "H4" && currentElement.compareDocumentPosition(second2Last) == 2) {
             tags.push([currentElement.textContent]);
             tags.push([]);
           }
         }
+        //Tags are added to a new sheet, or appended to a current one.
         if(tags.length != 0) {
           if(!workbook.SheetNames.some(thisName=> name.textContent == thisName)){
             XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(tags, { origin: `${this.speech}2` }), name.textContent);
@@ -109,6 +117,7 @@ export default {
         }
 
       }
+      //Sets each sheet to be organized by speech, and create a nice columnn width
       workbook.SheetNames.forEach(name => {
         let worksheet = workbook.Sheets[name];
         let wscols = [
@@ -127,7 +136,7 @@ export default {
         XLSX.utils.sheet_add_aoa(worksheet, [["1AC", "1NC", "2AC", "2NC", "1NR", "1AR", "2NR", "2AR"]], { origin: "A1" });
       });
       
-
+      //Download the excel sheet
       var data = XLSX.writeFile(workbook, "flow.xlsx");
       this.newSheet = data;   
       await this.sleep(2000);
@@ -140,7 +149,6 @@ export default {
       this.makeInvisible();
       await this.sleep(2000);
       this.createExcel();
-      console.log(this.speech);
     }
   }
 

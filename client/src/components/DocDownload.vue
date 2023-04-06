@@ -107,6 +107,12 @@ export default {
             tags.push([]);
           }
         }
+        //Limit sheetnames to 31 characters and remove bad input
+        if(name.textContent.length > 31) {
+          name.textContent = name.textContent.slice(0, 31).replaceAll(":", "|").replaceAll("/", "|").replaceAll("\\", "|");
+        } else {
+          name.textContent = name.textContent.replaceAll(":", "|").replaceAll("/", "|").replaceAll("\\", "|");
+        }
         //Tags are added to a new sheet, or appended to a current one.
         if(tags.length != 0) {
           if(!workbook.SheetNames.some(thisName=> name.textContent == thisName)){

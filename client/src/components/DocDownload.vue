@@ -152,7 +152,6 @@ export default {
             .then(html=>{
                 html.toString()
             });
-      this.makeInvisible();
       await this.sleep(2000);
       this.createExcel();
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <b class="center">
       Place a Speech Document and your current flow to create a new flow
       document
@@ -22,15 +22,21 @@
       <input type="radio" id="2NR" name="speech" @change="speechChange($event)" value="G"/><br />
       <label for="2AR">2AR:</label>
       <input type="radio" id="2AR" name="speech" @change="speechChange($event)" value="H"/><br />
-      <label for="WordDocDownload">Choose Speech Document</label> <br />
+      <label for="WordDocDownload">Choose Speech Document</label>
       <input type="file" id="WordDocDownload" name="WordDocDownload" @change="uploadFile" ref="file"/><br />
-      <label for="FlowUpdate">Update Flow</label> <br />
+      <label for="FlowUpdate">Update Flow</label>
       <input type="file" id="FlowUpdate" name="FlowUpdate"  @change="uploadSheet" ref="flow"/><br />
       <label for="headingTypes">Insert the types of headings you use: For example, "h1, h2, h3"</label> <br />
       <input type="text" id="headingTypes" name="headingTypes" @change="changeHeading($event)" value="h1, h2, h3"><br />
       <button v-on:click="submitFiles">Submit</button> <br />
       <b class="center">
         Remember to use the wrap text function in the Excel Document!
+      </b>
+      <br />
+      <br />
+      <br />
+      <b id="SubmittedSpeechDoc" class="center" style="visibility: hidden">
+        Below is the Speech Document you uploaded.
       </b>
   </div>
 </template>
@@ -59,15 +65,6 @@ export default {
     },
     uploadFile() {
       this.word = this.$refs.file.files[0];
-    },
-    sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    },
-    //makes the added div container from docx2html invisible
-    async makeInvisible() {
-      await this.sleep(2000);
-      const htmlDiv = document.getElementById("A");
-      htmlDiv.style.display = "none";
     },
     //creates the excel sheet
     async createExcel() {
@@ -145,14 +142,13 @@ export default {
       //Download the excel sheet
       var data = XLSX.writeFile(workbook, "flow.xlsx");
       this.newSheet = data;   
-      await this.sleep(2000);
     },
     async submitFiles() {
-      require("docx2html")(this.word)
+      await require("docx2html")(this.word)
             .then(html=>{
                 html.toString()
             });
-      await this.sleep(2000);
+      document.querySelector("#SubmittedSpeechDoc").style.visibility="visible";
       this.createExcel();
     }
   }
@@ -160,21 +156,3 @@ export default {
   
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>

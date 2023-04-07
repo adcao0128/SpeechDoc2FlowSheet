@@ -84,22 +84,18 @@ export default {
         //Sets up which tags to take from heading to heading
         let name = flowNames[i];
         let nextName;
-        let second2Last = null;
-        if(i != flowNames.length - 1) {
+        if(i != flowNames.length - 1) 
           nextName = flowNames[i + 1];
-        } else if (i - 2 >= 0) {
-          second2Last = flowNames[i - 2];
-        }
         let tags = [];
         //Goes through the entire HTML dom
         for (let currentElement of document.querySelectorAll("h4")) {
           //Either we are at the start/middle of the document
-          if((i != flowNames.length - 1) && currentElement.tagName == "H4" && (currentElement.compareDocumentPosition(name) == 2 && currentElement.compareDocumentPosition(nextName) == 4)) {
+          if((i != flowNames.length - 1) && (currentElement.compareDocumentPosition(name) == 2 && currentElement.compareDocumentPosition(nextName) == 4)) {
             tags.push([currentElement.textContent]);
             tags.push([])
           }
           //Or the last heading for the document
-          if((i == flowNames.length - 1) && currentElement.tagName == "H4" && currentElement.compareDocumentPosition(second2Last) == 2 && (currentElement.compareDocumentPosition(name) == 4)) {
+          if((i == flowNames.length - 1) && (currentElement.compareDocumentPosition(name) == 2)) {
             tags.push([currentElement.textContent]);
             tags.push([]);
           }

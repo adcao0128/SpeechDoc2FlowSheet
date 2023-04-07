@@ -87,8 +87,8 @@ export default {
         let second2Last = null;
         if(i != flowNames.length - 1) {
           nextName = flowNames[i + 1];
-        } else {
-          second2Last = flowNames[i - 1];
+        } else if (i - 2 >= 0) {
+          second2Last = flowNames[i - 2];
         }
         let tags = [];
         //Goes through the entire HTML dom
@@ -99,7 +99,7 @@ export default {
             tags.push([])
           }
           //Or the last heading for the document
-          if((i == flowNames.length - 1) && currentElement.tagName == "H4" && currentElement.compareDocumentPosition(second2Last) == 2) {
+          if((i == flowNames.length - 1) && currentElement.tagName == "H4" && currentElement.compareDocumentPosition(second2Last) == 2 && (currentElement.compareDocumentPosition(name) == 4)) {
             tags.push([currentElement.textContent]);
             tags.push([]);
           }

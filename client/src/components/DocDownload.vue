@@ -140,7 +140,7 @@ export default {
       });
       
       //Download the excel sheet
-      var data = XLSX.writeFile(workbook, "flow.xlsx");
+      let data = XLSX.writeFile(workbook, "flow.xlsx");
       this.newSheet = data;   
     },
     async submitFiles() {
